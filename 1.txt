@@ -1,0 +1,11 @@
+PROGRAM test;
+var a,b,c:INTEGER
+a:=1
+b:=5
+c:=a+b
+IF c>a THEN
+WHILE c>0 DO
+BEGIN
+c:=c-1
+a:=a*2
+END
