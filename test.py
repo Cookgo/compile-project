@@ -1,5 +1,8 @@
 # -*- coding: utf-8 -*-
-for i in range(5):
-    if i<5:
-        continue
-    print(i)
+a=[1,2,3]
+b=['a','b','c','d','e']
+c=['A','B','C']
+d=['!','@','#']
+p=[a,b,c,d]
+for x in p:
+    print(x)
