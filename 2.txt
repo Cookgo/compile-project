@@ -1,9 +1,7 @@
-PROGRAM TEST;
+PROGRAM TEST;&
 VAR A,B,C:INTEGER
-/*ÕâÊÇ¸öÉ¶
-ÄØ*/
-A:=1
-B:=5
+A:=65536
+BFAJKFAKJKAFSLA:=5
 //good idea
 C:=A+B
 IF C>A THEN

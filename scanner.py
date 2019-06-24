@@ -5,15 +5,12 @@ buf = ""
 mLine = 0
 mRow = 1
 currentState = 'A'
-__letterSet__  = { 'a','b','c','d','e','f','g','h','i','j','k','l','m',
-				'n','o','p','q','r','s','t','u','v','w','x','y','z',
-				'A','B','C','D','E','F','G','H','I','J','K','L','M',
-				'N','O','P','Q','R','S','T','U','V','W','X','Y','Z',}
+ 
+__letterSet__  = {'A','B','C','D','E','F','G','H','I','J','K','L','M',
+				'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'}
 __digitSet__ = {'0','1','2','3','4','5','6','7','8','9'}
 __blankCharSet__ = {' ', '\n', '\t'}
 __boardSet__ = {';',',', '(', ')'}
-# __switchCharSet__ = {'b', 'n', 't', '\'', '\"','\\'}
-
 __keywordSet__ = {'PROGRAM','BEGIN','END','VAR','INTEGER','REAL','WHILE','DO','IF','THEN','ELSE'}
 __type__={'ID':1,'INT':2,'REAL':3,
 			'PROGRAM':101,'BEGIN':102,'END':103,'VAR':104,'INTEGER':105,'REAL':106,'WHILE':107,'DO':108,'IF':109,'THEN':110,'ELSE':111,
@@ -116,6 +113,7 @@ def tokenizer(ch):
 				buf = buf + ch
 				currentState='$'
 			else:
+				print(ch)
 				compilerFail('不可识别的字符')
 				return
 
@@ -130,13 +128,21 @@ def tokenizer(ch):
 					out=(buf,__type__[buf])
 					console_msg = console_msg + str(out)+'\n'
 					result.append(buf)
+					buf=''
+					currentState='A'
 				else:
-					out=(buf,__type__['ID'])
-					console_msg = console_msg +str(out)+'\n'
-					result.append('ID')
-				buf = ""
-				currentState = 'A'
-				continue
+					if len(buf)<=8:
+						out=(buf,__type__['ID'])
+						console_msg = console_msg +str(out)+'\n'
+						result.append('ID')
+						buf=''
+						currentState='A'
+					else:
+						out=(buf[0:8],__type__['ID'])
+						console_msg = console_msg +str(out)+'\n'
+						result.append('ID')
+						compilerFail('标识符大于八位')
+						return
 			
 
 		##############     状态C         #################
@@ -151,14 +157,16 @@ def tokenizer(ch):
 				currentState = 'P'
 				return
 			else:#可接受状态
-				out=(buf,__type__['INT'])
+				if int(buf)>65535:
+					compilerFail('整型大于65535')
+					return
+				else:
+					out=(buf,__type__['INT'])
 				console_msg = console_msg +str(out)+'\n'
 				result.append('INT')
 				buf = ""
 				currentState = 'A'
 				continue
-
-
 
 		##############     状态K         #################
 		elif currentState == 'K':
@@ -386,7 +394,7 @@ def scanner(text):
 			
 def main():
 	global result,console_msg
-	fp = open(r'C:\Users\dkl\Desktop\compile\1.txt','r')
+	fp = open(r'C:\Users\dkl\Desktop\compile\2.txt','r')
 	scanner(fp.read())
 # 	console_msg= console_msg+'($,结束符)\n'
 # 	result.append('$')
