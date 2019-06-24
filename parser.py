@@ -15,15 +15,16 @@ flag=False
 
 
 def init():
-    for line in fileinput.input('grammar.txt'):
-        a = line.split()
-        pro_set.append(a)
-    for p in pro_set:
-        non_ter_set.add(p[0])
-    for p in pro_set:
-        for t in p[2:]:
-            if t not in non_ter_set:
-                ter_set.add(t)
+    # for line in fileinput.input('grammar2.txt'):
+    #     a = line.split()
+    #     pro_set.append(a)
+    # for p in pro_set:
+    #     non_ter_set.add(p[0])
+   
+    # for p in pro_set:
+    #     for t in p[2:]:
+    #         if t not in non_ter_set:
+    #             ter_set.add(t)
     for f in non_ter_set:
         first_set[f] = set()
         follow_set[f] = set()
@@ -32,17 +33,17 @@ def init():
         select_set[i] = set()
 
 
-S = '程序'
-# non_ter_set = {'E', 'E\'', 'T', 'T\'', 'F'}
-# ter_set = {'id', '+', '*', '(', ')'}
-# pro_set.append(['E', '->', 'T', 'E\''])
-# pro_set.append(['E\'', '->', '+', 'T', 'E\''])
-# pro_set.append(['E\'', '->', 'empty'])
-# pro_set.append(['T', '->', 'F', 'T\''])
-# pro_set.append(['T\'', '->', '*', 'F', 'T\''])
-# pro_set.append(['T\'', '->', 'empty'])
-# pro_set.append(['F', '->', '(', 'E', ')'])
-# pro_set.append(['F', '->', 'id'])
+S = 'E'
+non_ter_set = {'E', 'E\'', 'T', 'T\'', 'F'}
+ter_set = {'id', '+', '*', '(', ')'}
+pro_set.append(['E', '->', 'T', 'E\''])
+pro_set.append(['E\'', '->', '+', 'T', 'E\''])
+pro_set.append(['E\'', '->', 'empty'])
+pro_set.append(['T', '->', 'F', 'T\''])
+pro_set.append(['T\'', '->', '*', 'F', 'T\''])
+pro_set.append(['T\'', '->', 'empty'])
+pro_set.append(['F', '->', '(', 'E', ')'])
+pro_set.append(['F', '->', 'id'])
 
 
 # 实现栈
@@ -139,6 +140,7 @@ def loop_fo():
             if x in right:
                 i = right.index(x)
                 if x == right[-1]:
+                    follow_set[x].add('$')
                     follow_set[x] = follow_set[x] | (
                         follow_set[left]-{'empty'})
                 else:
@@ -221,8 +223,11 @@ def down(x,used_l,used_p):
     global non_rec
     global flag
     used_l.add(x)
+    print(id(used_l))
+    print(x)
     for p in pro_set:
         if p[0] == x: 
+            print(p)
             if p[2] in ter_set:
                 continue
             if p[2] in non_ter_set:
@@ -230,7 +235,7 @@ def down(x,used_l,used_p):
                     used_p.append(p)
                     print(p[2])
                     print(used_l)
-                    print(used_p)
+                    # print(used_p)
                     flag=True
                     return
                 else:
@@ -246,13 +251,11 @@ def is_recursion():
     used_p=[]
     for x in non_ter_set:
         down(x,used_l,used_p)
-        # if flag==True:
-        #     break
+        if flag==True:
+            break
     return flag
 
-# 去除回溯与递归
-def re_back():
-    
+
 
 
         
@@ -270,6 +273,10 @@ def is_ll_1():
                 if i != j:
                     res = select_set[i] & select_set[j]
                     if len(res) != 0:
+                        print(select_set[i])
+                        print(select_set[j])
+                        print(pro_set[i])
+                        print(pro_set[j])
                         return False
     return True
 
@@ -327,13 +334,15 @@ if __name__ == "__main__":
     #  print(non_ter_set)
     #  print(ter_set)
     get_first()
+    # print(first_set)
     get_follow()
+    # print(follow_set)
     get_select()
+    # print(select_set)
 
-    # res = is_ll_1()
-    # print(res)
-    res=is_recursion()
+    res = is_ll_1()
     print(res)
-    # str=['id','+','id','*','id','$']
-    # pre_analyze(str)
+    
+    str=['id','+','id','*','id','$']
+    pre_analyze(str)
      
